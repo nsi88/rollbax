@@ -31,6 +31,7 @@ defmodule ExUnit.RollbaxCase do
   end
 end
 
+# Maybe we can call this FakeRollbarAPI
 defmodule RollbarAPI do
   alias Plug.Conn
   alias Plug.Adapters.Cowboy

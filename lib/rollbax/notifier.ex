@@ -36,6 +36,7 @@ defmodule Rollbax.Notifier do
   end
 
   defp take_into_map(metadata, keys) do
+    # Maybe Map.take(metadata, keys)
     Enum.reduce metadata, %{}, fn({key, val}, acc) ->
       if key in keys, do: Map.put(acc, key, val), else: acc
     end

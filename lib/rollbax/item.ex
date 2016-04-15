@@ -1,4 +1,9 @@
 defmodule Rollbax.Item do
+  # Maybe link to docs https://rollbar.com/docs/api/items_post/
+
+  # Maybe add a comment that says we do this to chache the cachable parts of the
+  # payload that we keep in the Rollbax.Client's state.
+
   def draft(token, envt) do
     {:ok, host} = :inet.gethostname
     %{
@@ -15,7 +20,10 @@ defmodule Rollbax.Item do
     }
   end
 
+  # Maybe a name like "fill_draft"
+
   def compose(draft, {level, msg, time, meta}) do
+    # :rollbax_occurr_data needs docs
     {occurr_data, meta} =
       Map.pop(meta, :rollbax_occurr_data, %{})
     Map.update!(draft, "data", fn(data) ->
@@ -48,6 +56,8 @@ defmodule Rollbax.Item do
     |> List.to_string
     |> String.strip
   end
+
+  # We can make @project_version similar to push-cartel
 
   defp notifier() do
     %{

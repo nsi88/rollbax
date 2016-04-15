@@ -8,6 +8,11 @@ defmodule Rollbax.Client do
   @api_url "https://api.rollbar.com/api/1/item/"
   @headers [{"content-type", "application/json"}]
 
+  ## Maybe a Rollbax.Event callback?
+
+  # We maybe should typespec this (as it's hard to say that :enabled is true |
+  # false | :log for example.
+
   defstruct [:draft, :url, :enabled]
 
   def start_link(token, envt, enabled, url \\ @api_url) do
@@ -30,6 +35,7 @@ defmodule Rollbax.Client do
     :ok = :hackney_pool.stop_pool(__MODULE__)
   end
 
+  # Maybe we can add a check for lvl as a guard
   def emit(lvl, msg, meta) when is_map(meta) do
     event = {Atom.to_string(lvl), msg, unix_timestamp(), meta}
     GenServer.cast(__MODULE__, {:emit, event})
@@ -55,6 +61,8 @@ defmodule Rollbax.Client do
     case :hackney.post(state.url, @headers, payload, opts) do
       {:ok, _ref} -> :ok
       {:error, reason} ->
+        # Why we're not raising/exiting here so that Rollbax.Client dies and
+        # restarts?
         Logger.error("(Rollbax) connection error: #{inspect(reason)}")
     end
     {:noreply, state}
@@ -69,6 +77,7 @@ defmodule Rollbax.Client do
       {:status, code, desc} when code != 200 ->
         Logger.warn("(Rollbax) unexpected API status: #{code}/#{desc}")
       {:error, reason} ->
+        # Same as above, why not raising/exiting here?
         Logger.error("(Rollbax) connection error: #{inspect(reason)}")
       _otherwise ->
         Logger.debug("(Rollbax) API response: #{inspect(response)}")
@@ -77,6 +86,7 @@ defmodule Rollbax.Client do
   end
 
   def handle_info(message, state) do
+    # Maybe warn?
     Logger.info("(Rollbax) unexpected message: #{inspect(message)}")
     {:noreply, state}
   end

@@ -7,6 +7,7 @@ defmodule Rollbax do
     enabled = get_config(:enabled, true)
 
     token = fetch_config(:access_token)
+    # Maybe we can rename this to environment
     envt  = fetch_config(:environment)
 
     children = [
@@ -15,6 +16,8 @@ defmodule Rollbax do
 
     Supervisor.start_link(children, strategy: :one_for_one)
   end
+
+  # Maybe this can be removed? I need to check when `Application.fetch_env` was introduced
 
   defp get_config(key, default) do
     Application.get_env(:rollbax, key, default)

@@ -1,4 +1,5 @@
 defmodule Rollbax.ClientTest do
+  # Maybe just RollbaxCase
   use ExUnit.RollbaxCase
 
   alias Rollbax.Client
